@@ -432,7 +432,7 @@
 
     const ESPERA_RETOMADA = 8000;
     const VELOCIDADE_LETRA = 0.027;
-    const PAUSA_RESPOSTA = 3;
+    const PAUSA_RESPOSTA = 2.4;
 
     let linhaDoTempo = null;
     let indiceCiclo = 0;
@@ -522,8 +522,15 @@
         return;
       }
 
+      /* A frase que está na tela sai enquanto a próxima já começa: o título nunca fica vazio */
+      const saindo = movimentoReduzido ? [] : $$('.problema, .resposta', frase).filter((camada) => {
+        const estilo = getComputedStyle(camada);
+        return estilo.visibility === 'visible' && Number(estilo.opacity) > 0.05;
+      });
+
       const partes = montar(area);
       const { letras, palavrasResposta } = partes;
+      frase.append(...saindo);
       const tl = gsap.timeline({
         onComplete: () => { if (automatico) proximoDoCiclo(); },
       });
@@ -536,6 +543,16 @@
           .set(palavrasResposta, { opacity: 1 }, 2.5)
           .to({}, { duration: 6 });
         return;
+      }
+
+      if (saindo.length) {
+        tl.to(saindo, {
+          opacity: 0,
+          y: -8,
+          duration: 0.25,
+          ease: 'power1.out',
+          onComplete: () => saindo.forEach((camada) => camada.remove()),
+        }, 0);
       }
 
       /* A balança pende para um lado enquanto o problema é apresentado */
@@ -563,7 +580,7 @@
           }
           ultima = atual;
         },
-      });
+      }, saindo.length ? 0.1 : 0);
 
       /* 2. Risco dourado */
       tl.call(() => {
@@ -572,11 +589,11 @@
       tl.to(partes.risco, { '--risco': '100%', duration: 0.6, ease: 'power2.inOut' });
 
       /* 3. Saída do problema e entrada da resposta, palavra por palavra */
-      tl.to(partes.problema, { opacity: 0, y: -10, duration: 0.3, ease: 'power2.in' }, '+=0.2');
+      tl.to(partes.problema, { opacity: 0, y: -10, duration: 0.25, ease: 'power1.in' }, '+=0.2');
       tl.fromTo(palavrasResposta,
         { opacity: 0, y: 16 },
-        { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out', stagger: 0.07 },
-        '-=0.05');
+        { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out', stagger: 0.045 },
+        '-=0.2');
 
       /* A resposta devolve o equilíbrio */
       tl.to(inclinacao, {
@@ -586,9 +603,9 @@
         onUpdate: aplicarInclinacao,
       }, '<');
 
-      /* 4. Pausa e saída */
+      /* 4. Pausa: a resposta só sai quando a frase seguinte entrar */
       if (automatico) {
-        tl.to(partes.resposta, { opacity: 0, duration: 0.35 }, `+=${PAUSA_RESPOSTA}`);
+        tl.to({}, { duration: PAUSA_RESPOSTA });
       } else {
         tl.timeScale(1.7); /* Quem clicou não quer esperar a digitação inteira */
       }
