@@ -972,6 +972,8 @@
       onStart: desenharSetas,   /* As fontes já chegaram: mede de novo */
       scrollTrigger: { trigger: secao, start: 'top 45%', once: true },
     });
+    /* Velocidade da cena inteira: 2 = duas vezes mais rápida que os tempos abaixo */
+    tl.timeScale(2);
 
     /* 1. A frase acende palavra por palavra */
     palavras.forEach((palavra, indice) => {
