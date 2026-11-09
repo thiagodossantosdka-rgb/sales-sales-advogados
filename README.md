@@ -21,6 +21,8 @@ Abrir o `index.html` com dois cliques também funciona, mas o servidor reproduz 
 
 Envie para qualquer hospedagem estática: `index.html`, `politica-de-privacidade.html` e a pasta `assets/`. A pasta `.claude/` e este README não precisam subir.
 
+Depois de editar o CSS ou o JavaScript, troque o número de versão no `index.html` (`style.css?v=...` e `main.js?v=...`, por exemplo para a data do dia). Sem isso, quem já visitou o site pode continuar vendo a versão antiga, guardada no navegador.
+
 Ative a compressão gzip ou brotli na hospedagem. Ela reduz bastante o tamanho do HTML, do CSS e do JavaScript.
 
 ## Dados fictícios a substituir

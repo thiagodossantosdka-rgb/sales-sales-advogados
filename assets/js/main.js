@@ -1009,12 +1009,11 @@
         `chegada${indice}+=0.18`);
     });
 
-    /* 3. A frase de origem vira a pergunta com o botão */
-    tl.to(frase, { autoAlpha: 0, y: -12, duration: 0.35, ease: 'power1.inOut' }, '+=0.5');
+    /* 3. A frase continua; a faixa com a pergunta e o botão entra por baixo */
     tl.fromTo(fecho,
-      { autoAlpha: 0, y: 14 },
-      { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out', immediateRender: false },
-      '-=0.12');
+      { autoAlpha: 0, y: 18 },
+      { autoAlpha: 1, y: 0, duration: 0.55, ease: 'power2.out', immediateRender: false },
+      '+=0.3');
     tl.to(aviso, { opacity: 1, duration: 0.4 }, '<');
 
     let espera;
